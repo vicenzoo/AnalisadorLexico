@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package lexico;
 
 import java.text.Normalizer;
@@ -27,7 +22,7 @@ public class Analisador extends javax.swing.JFrame {
         jLabel6.setVisible(false); //Label Obs
         for (int i = 0; i < 100; i++) { //Linha
             for (int j = 1; j <= 26; j++) { //Coluna
-                this.gridAutomato.setValueAt("-", i, j); //Zera Valores
+                this.gridAutomato.setValueAt("*", i, j); //Zera Valores
             }
         }
     }
@@ -80,11 +75,6 @@ public class Analisador extends javax.swing.JFrame {
         txAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txAddActionPerformed(evt);
-            }
-        });
-        txAdd.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txAddKeyTyped(evt);
             }
         });
 
@@ -274,6 +264,7 @@ public class Analisador extends javax.swing.JFrame {
                 "##", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
             }
         ));
+        gridAutomato.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         gridAutomato.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         gridAutomato.setGridColor(new java.awt.Color(51, 51, 51));
         gridAutomato.setShowGrid(true);
@@ -405,6 +396,7 @@ public class Analisador extends javax.swing.JFrame {
             if (' ' == pegaCaractere) {
 
                 if (this.FinalA.contains(linha)) {
+                    //Achou a Palavra
                     JOptionPane.showMessageDialog(this, "Palavra " + palavra.toUpperCase() + " Localizada!");
                     txBusca.setText("");
                     btnLimpaActionPerformed(evt);
@@ -420,14 +412,14 @@ public class Analisador extends javax.swing.JFrame {
                     try {
                         linha = Integer.parseInt(setaValor);
                         this.gridAutomato.setRowSelectionInterval(linha, linha);
-                        //this.gridAutomato.changeSelection(linha, linha, rootPaneCheckingEnabled, rootPaneCheckingEnabled);
-                    } catch (Exception ex) { //se entrar com palavra inexistente, cai na exception de erro
+                    
+                    } catch (Exception ex) { //Caso Não encontre a Palavra
                         JOptionPane.showMessageDialog(this, "Letra não Localizada");
                         this.gridAutomato.clearSelection();
-                        linha = -1; //estado de erro
+                        linha = -1;
                         txBusca.requestFocus();
 
-                        for (int ii = 1; ii <= 26; ii++) { //cria a linha de erro
+                        for (int ii = 1; ii <= 26; ii++) { //Linha de Erro
                             this.gridAutomato.setValueAt("E", 99, ii);
                             this.gridAutomato.setRowSelectionInterval(99, 99);
                             this.gridAutomato.changeSelection(99, 99, rootPaneCheckingEnabled, rootPaneCheckingEnabled);
@@ -446,12 +438,8 @@ public class Analisador extends javax.swing.JFrame {
         jLabel6.setVisible(true);
     }//GEN-LAST:event_txBuscaFocusGained
 
-    private void txAddKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txAddKeyTyped
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txAddKeyTyped
-
     private void txAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txAddActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_txAddActionPerformed
 
     private void bAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bAddActionPerformed
@@ -488,7 +476,7 @@ public class Analisador extends javax.swing.JFrame {
                     //(imagem) -> A partir da posição 97 començam as letras em ASCII ou seja a variavel coluna coluna irá diminuir 96 posições transformando alfabeto em numero
                     String letraTabela = (String) this.gridAutomato.getValueAt(count, coluna); 
                     //pega o valor que está setado na tabela na posição em que a letra será colocada
-                    if (letraTabela.equals("-") || letraTabela.equals("F")) { 
+                    if (letraTabela.equals("*") || letraTabela.equals("F")) { 
                         // Preenche coordenada respectiva 
                         this.gridAutomato.setValueAt((conta + 1) + "", count++, coluna); 
                         //seta a letra na célula correspondente
@@ -505,7 +493,7 @@ public class Analisador extends javax.swing.JFrame {
                         continue;
                     }
                     if (i == (StringpChar.length - 1)) {
-                        FinalB.add(count);
+                        FinalB.add(count); //Salva estado final
                         count++;
                     }
                     count = ++conta;
@@ -516,7 +504,7 @@ public class Analisador extends javax.swing.JFrame {
                 }
 
                 FinalA.addAll(FinalB); //adiciona este estado final no array global de estados finais
-                JOptionPane.showMessageDialog(this, "Palavra " + palavra.toUpperCase() + " adicionada com sucesso");//mensagem de sucesso
+                JOptionPane.showMessageDialog(this, "Palavra " + palavra.toUpperCase() + " foi adicionada.");//mensagem de sucesso
                 txAdd.setText("");
 
             } else {
@@ -536,6 +524,7 @@ public class Analisador extends javax.swing.JFrame {
     }//GEN-LAST:event_bAddActionPerformed
 
     private void btnLimpaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpaActionPerformed
+        //Função para limpar form
         FinalA.clear();
         painelDicionario.setText("");
         jLabel4.setText("Palavra");
@@ -546,7 +535,7 @@ public class Analisador extends javax.swing.JFrame {
     private void setaEstadoFinal(int linha) {
         for (int i = 1; i <= 26; i++) { //Alfabeto
             String valorAtual = (String) this.gridAutomato.getValueAt(linha, i);
-            if ("-".equals(valorAtual)) {  //mudar, por valor atual no lugar do traço 
+            if ("*".equals(valorAtual)) {  //Preenche tabela com *
                 this.gridAutomato.setValueAt("F", linha, i); //Define o fim da palavra escrita
             }
         }
